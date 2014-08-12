@@ -6,7 +6,7 @@
 #define COUNTRY	0
 #define CITY	1
 
-//#define DEBUG
+#define DEBUG
 
 typedef struct ST_country
 {
@@ -37,6 +37,7 @@ typedef struct ST_japantime
 
 double match_country(ST_country *st_country, char *country, int maxCountry, int search);
 double match_city(ST_country *st_country, int maxCountry, int maxCity);
+void getTimeLag(ST_timelag *timeLag, ST_japantime jpTime, double standardTime);
 
 int main(void)
 {
@@ -74,11 +75,11 @@ int main(void)
 	t_st = localtime(&timer);
 
 #ifdef DEBUG
-	jpTime.year	= 2010;
-	jpTime.mon	= 1;
+	jpTime.year	= 2011;
+	jpTime.mon	= 3;
 	jpTime.day	= 1;
 	jpTime.hour	= 1;
-	jpTime.min	= 0;
+	jpTime.min	= 29;
 	jpTime.sec	= t_st->tm_sec;
 #else 
 	jpTime.year	= 1900 + t_st->tm_year;
@@ -100,74 +101,8 @@ int main(void)
 	}
 	else
 	{
-		timeLag.gmtLag = -(9 - standardTime);
-		timeLag.yearLag = 0;
-		timeLag.monLag = 0;
-		timeLag.dayLag = 0;
-		timeLag.hourLag = 0;
-		timeLag.minLag = 0;
-		//printf("\nグリニッジ標準時%.2f\n", standardTime);
-		//printf("現地からの時差%.2f\n", timeLag.gmtLag);
-		printf("日本は%d年%d月%d日%d時%d分\n",jpTime.year, jpTime.mon, jpTime.day, jpTime.hour, jpTime.min);
-	
-			timeLag.minLag = (int)(((double)timeLag.gmtLag - (int)timeLag.gmtLag) * 60 + jpTime.min);
-			printf("timeLag.minLag %d\n", timeLag.minLag);
-			if (timeLag.minLag < 0)
-			{
-				timeLag.minLag = 60 + timeLag.minLag;
-				timeLag.hourLag = -1;
-			}
-			printf("timeLag.minLag %d\n", timeLag.minLag);
-			timeLag.hourLag += (int)timeLag.gmtLag + jpTime.hour;
-			printf("timeLag.hourLag %d\n", timeLag.hourLag);
-			if (timeLag.hourLag < 0)
-			{
-				timeLag.hourLag = 24 + timeLag.hourLag;
-				timeLag.dayLag = -1;
-			}
-			printf("timeLag.hourLag %d\n", timeLag.hourLag);
-			timeLag.dayLag += jpTime.day;
-			if (timeLag.dayLag <= 0)
-			{
-				switch(jpTime.mon)
-				{
-				case 5:
-				case 7:		
-				case 10:
-				case 12:
-					timeLag.dayLag = 30;
-					break;
-				case 1:
-				case 2:
-				case 4:
-				case 6:
-				case 8:
-				case 9:
-				case 11:
-					timeLag.dayLag = 31;
-					break;
-				case 3:
-					if (jpTime.year % 400 == 0 || (jpTime.year % 4 == 0 && jpTime.year % 100 != 0))
-					{
-						timeLag.dayLag = 29;
-					}
-					else
-					{
-						timeLag.dayLag = 28;
-					}
-					break;
-				}
-				timeLag.monLag = -1;
-			}
-			timeLag.monLag += jpTime.mon;
-			if (timeLag.monLag <= 0)
-			{
-				timeLag.monLag = 12;
-				timeLag.yearLag = -1;
-			}
-			timeLag.yearLag += jpTime.year;
-		
-		printf("向こうの時間は%d年%d月%d日%d時%d分\n", timeLag.yearLag, timeLag.monLag, timeLag.dayLag, timeLag.hourLag, timeLag.minLag);
+		getTimeLag(&timeLag, jpTime, standardTime);
+		printf("向こうは%4d年%2d月%2d日%2d時%2d分\n", timeLag.yearLag, timeLag.monLag, timeLag.dayLag, timeLag.hourLag, timeLag.minLag);
 	}
 
 	fclose(f_country);
@@ -245,4 +180,153 @@ double match_city(ST_country *st_country, int maxCountry, int maxCity)
 		}
 	}
 	return 100;
+}
+
+void getTimeLag(ST_timelag *timeLag, ST_japantime jpTime, double standardTime)
+{
+	timeLag->gmtLag = -(9 - standardTime);
+		timeLag->yearLag = 0;
+		timeLag->monLag = 0;
+		timeLag->dayLag = 0;
+		timeLag->hourLag = 0;
+		timeLag->minLag = 0;
+		//printf("\nグリニッジ標準時%.2f\n", standardTime);
+		//printf("現地からの時差%.2f\n", timeLag->gmtLag);
+		printf("　日本は%2d年%2d月%2d日%2d時%2d分\n",jpTime.year, jpTime.mon, jpTime.day, jpTime.hour, jpTime.min);
+
+		timeLag->minLag = (int)(((double)timeLag->gmtLag - (int)timeLag->gmtLag) * 60 + jpTime.min);
+
+		if (timeLag->minLag < 0)
+		{
+			timeLag->minLag = 60 + timeLag->minLag;
+			timeLag->hourLag = -1;
+		}
+		else if (timeLag->minLag >= 60)
+		{
+			timeLag->minLag = timeLag->minLag - 60;
+			timeLag->hourLag = +1;
+		}
+
+		timeLag->hourLag += (int)timeLag->gmtLag + jpTime.hour;
+
+		if (timeLag->hourLag < 0)
+		{
+			timeLag->hourLag = 24 + timeLag->hourLag;
+			timeLag->dayLag = -1;
+		}
+		else if (timeLag->hourLag >= 24)
+		{
+			timeLag->hourLag = timeLag->hourLag - 24;
+			timeLag->dayLag = +1;
+		}
+
+		timeLag->dayLag += jpTime.day;
+		switch(jpTime.mon)
+		{
+
+		case 5:
+		case 7:	
+		case 10:
+		case 12:
+			if (timeLag->dayLag <= 0)
+			{
+				timeLag->dayLag = 30;
+				timeLag->monLag = -1;
+			}
+			else if (timeLag->dayLag > 31)
+			{
+				timeLag->dayLag = 1;
+				timeLag->monLag = +1;
+			}
+			break;
+
+		case 1:
+		case 8:
+			if (timeLag->dayLag <= 0)
+			{
+				timeLag->dayLag = 31;
+				timeLag->monLag = -1;
+			}
+			else if (timeLag->dayLag > 31)
+			{
+				timeLag->dayLag = 1;
+				timeLag->monLag = +1;
+			}
+			break;
+
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			if (timeLag->dayLag <= 0)
+			{
+				timeLag->dayLag = 31;
+				timeLag->monLag = -1;
+			}
+			else if (timeLag->dayLag > 30)
+			{
+				timeLag->dayLag = 1;
+				timeLag->monLag = +1;
+			}
+			break;
+
+		case 2:
+			if (timeLag->dayLag <= 0)
+			{
+				timeLag->dayLag = 31;
+				timeLag->monLag = -1;
+			}
+			if (jpTime.year % 400 == 0 || (jpTime.year % 4 == 0 && jpTime.year % 100 != 0))
+			{
+				if (timeLag->dayLag > 29)
+				{
+					timeLag->dayLag = 1;
+					timeLag->monLag = +1;
+				}
+				
+			}
+			else
+			{
+				if (timeLag->dayLag > 28)
+				{
+					timeLag->dayLag = 1;
+					timeLag->monLag = +1;
+				}
+			}
+			break;
+
+		case 3:
+			if (timeLag->dayLag <= 0)
+			{
+				if (jpTime.year % 400 == 0 || (jpTime.year % 4 == 0 && jpTime.year % 100 != 0))
+				{
+					timeLag->dayLag = 29;
+				}
+				else
+				{
+					timeLag->dayLag = 28;
+				}
+				timeLag->monLag = -1;
+			}
+			else if (timeLag->dayLag > 31)
+			{
+				timeLag->dayLag = 1;
+				timeLag->monLag = +1;
+			}
+
+			break;
+		}
+
+		timeLag->monLag += jpTime.mon;
+		if (timeLag->monLag <= 0)
+		{
+			timeLag->monLag = 12;
+			timeLag->yearLag = -1;
+		}
+		else if (timeLag->monLag >= 13)
+		{
+			timeLag->monLag = 1;
+			timeLag->yearLag = +1;
+		}
+		timeLag->yearLag += jpTime.year;
 }

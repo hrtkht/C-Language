@@ -55,7 +55,7 @@ int main(void)
 
 	if ((f_country = fopen("COUNTRY.txt", "a+")) == NULL)
 	{
-		printf("縺ｵ縺√＞繧九∴繧峨��\n");
+		printf("ふぁいるえらー\n");
 		exit(2);
 	}
 
@@ -68,7 +68,7 @@ int main(void)
 
 	maxCountry = i;
 
-	printf("縺ｩ縺薙��蝗ｽ：");
+	printf("どこの国：");
 	scanf("%s", country);
 
 	time(&timer);
@@ -97,12 +97,12 @@ int main(void)
 	}
 	if (standardTime == 100)
 	{
-		printf("\n讀懃ｴ｢邨先棡縺ｪ縺予n");
+		printf("\n検索結果なし\n");
 	}
 	else
 	{
 		getTimeLag(&timeLag, jpTime, standardTime);
-		printf("蜷代％縺�は%4d蟷ｴ%2d譛�%2d譌･%2d譎�%2d蛻�\n", timeLag.yearLag, timeLag.monLag, timeLag.dayLag, timeLag.hourLag, timeLag.minLag);
+		printf("向こうは%4d年%2d月%2d日%2d時%2d分\n", timeLag.yearLag, timeLag.monLag, timeLag.dayLag, timeLag.hourLag, timeLag.minLag);
 	}
 
 	fclose(f_country);
@@ -143,7 +143,7 @@ double match_country(ST_country *st_country, char *country, int maxCountry, int 
 			}
 			else
 			{
-				// 繧､繝ｳ繝俄��繧､繝ｳ繝峨ロ繧ｷ繧｢逧��↑
+				// インド→インドネシア的な
 				//return 100;
 			}
 			//printf("%ca\n", *(st_country[i].name + strlen(country)));
@@ -151,7 +151,7 @@ double match_country(ST_country *st_country, char *country, int maxCountry, int 
 		}
 		else
 		{
-			// 縺ｪ繧薙ｂ縺ｲ縺｣縺九°繧峨↑縺�
+			// なんもひっかからない
 			//return 100;
 		}
 	}
@@ -166,7 +166,7 @@ double match_city(ST_country *st_country, int maxCountry, int maxCity)
 {
 	int i;
 	int city;
-	printf("\n菴慕分縺ｮ蟾�??：");
+	printf("\n何番の州?? : ");
 	scanf("%d", &city);
 	for (i=0; i<maxCountry; ++i)
 	{
@@ -190,9 +190,7 @@ void getTimeLag(ST_timelag *timeLag, ST_japantime jpTime, double standardTime)
 		timeLag->dayLag = 0;
 		timeLag->hourLag = 0;
 		timeLag->minLag = 0;
-		//printf("\n繧ｰ繝ｪ繝九ャ繧ｸ讓呎ｺ匁凾%.2f\n", standardTime);
-		//printf("迴ｾ蝨ｰ縺九ｉ縺ｮ譎ょｷｮ%.2f\n", timeLag->gmtLag);
-		printf("縲�譌･譛ｬ縺ｯ%2d蟷ｴ%2d譛�%2d譌･%2d譎�%2d蛻�\n",jpTime.year, jpTime.mon, jpTime.day, jpTime.hour, jpTime.min);
+		printf("　日本は%4d年%2d月%2d日%2d時%2d分\n",jpTime.year, jpTime.mon, jpTime.day, jpTime.hour, jpTime.min);
 
 		timeLag->minLag = (int)(((double)timeLag->gmtLag - (int)timeLag->gmtLag) * 60 + jpTime.min);
 

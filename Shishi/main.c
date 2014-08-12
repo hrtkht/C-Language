@@ -55,7 +55,7 @@ int main(void)
 
 	if ((f_country = fopen("COUNTRY.txt", "a+")) == NULL)
 	{
-		printf("‚Ó‚Ÿ‚¢‚é‚¦‚ç[\n");
+		printf("ç¸ºï½µç¸ºâˆšï¼ç¹§ä¹âˆ´ç¹§å³¨ƒ¼\n");
 		exit(2);
 	}
 
@@ -68,7 +68,7 @@ int main(void)
 
 	maxCountry = i;
 
-	printf("‚Ç‚±‚Ì‘F");
+	printf("ç¸ºï½©ç¸ºè–™®è—ï½½ï¼š");
 	scanf("%s", country);
 
 	time(&timer);
@@ -97,12 +97,12 @@ int main(void)
 	}
 	if (standardTime == 100)
 	{
-		printf("\nŒŸõŒ‹‰Ê‚È‚µ\n");
+		printf("\nè®€æ‡ƒï½´ï½¢é‚¨å…ˆæ£¡ç¸ºï½ªç¸ºäºˆn");
 	}
 	else
 	{
 		getTimeLag(&timeLag, jpTime, standardTime);
-		printf("Œü‚±‚¤‚Í%4d”N%2dŒ%2d“ú%2d%2d•ª\n", timeLag.yearLag, timeLag.monLag, timeLag.dayLag, timeLag.hourLag, timeLag.minLag);
+		printf("èœ·ä»£ï¼…ç¸º†ã¯%4dèŸ·ï½´%2dè­›ˆ%2dè­Œï½¥%2dè­‚%2dè›»†\n", timeLag.yearLag, timeLag.monLag, timeLag.dayLag, timeLag.hourLag, timeLag.minLag);
 	}
 
 	fclose(f_country);
@@ -143,7 +143,7 @@ double match_country(ST_country *st_country, char *country, int maxCountry, int 
 			}
 			else
 			{
-				// ƒCƒ“ƒh¨ƒCƒ“ƒhƒlƒVƒA“I‚È
+				// ç¹§ï½¤ç¹ï½³ç¹ä¿„†’ç¹§ï½¤ç¹ï½³ç¹å³¨ãƒ­ç¹§ï½·ç¹§ï½¢é€§„ãâ†‘
 				//return 100;
 			}
 			//printf("%ca\n", *(st_country[i].name + strlen(country)));
@@ -151,7 +151,7 @@ double match_country(ST_country *st_country, char *country, int maxCountry, int 
 		}
 		else
 		{
-			// ‚È‚ñ‚à‚Ğ‚Á‚©‚©‚ç‚È‚¢
+			// ç¸ºï½ªç¹§è–™ï½‚ç¸ºï½²ç¸ºï½£ç¸ºä¹Â°ç¹§å³¨â†‘ç¸º„
 			//return 100;
 		}
 	}
@@ -166,7 +166,7 @@ double match_city(ST_country *st_country, int maxCountry, int maxCity)
 {
 	int i;
 	int city;
-	printf("\n‰½”Ô‚ÌB??F");
+	printf("\nè´æ…•åˆ†ç¸ºï½®èŸ¾??ï¼š");
 	scanf("%d", &city);
 	for (i=0; i<maxCountry; ++i)
 	{
@@ -190,9 +190,9 @@ void getTimeLag(ST_timelag *timeLag, ST_japantime jpTime, double standardTime)
 		timeLag->dayLag = 0;
 		timeLag->hourLag = 0;
 		timeLag->minLag = 0;
-		//printf("\nƒOƒŠƒjƒbƒW•W€%.2f\n", standardTime);
-		//printf("Œ»’n‚©‚ç‚Ì·%.2f\n", timeLag->gmtLag);
-		printf("@“ú–{‚Í%2d”N%2dŒ%2d“ú%2d%2d•ª\n",jpTime.year, jpTime.mon, jpTime.day, jpTime.hour, jpTime.min);
+		//printf("\nç¹§ï½°ç¹ï½ªç¹ä¹ãƒ£ç¹§ï½¸è®“å‘ï½ºåŒå‡¾%.2f\n", standardTime);
+		//printf("è¿´ï½¾è¨ï½°ç¸ºä¹ï½‰ç¸ºï½®è­ã‚‡ï½·ï½®%.2f\n", timeLag->gmtLag);
+		printf("ç¸²€è­Œï½¥è­›ï½¬ç¸ºï½¯%2dèŸ·ï½´%2dè­›ˆ%2dè­Œï½¥%2dè­‚%2dè›»†\n",jpTime.year, jpTime.mon, jpTime.day, jpTime.hour, jpTime.min);
 
 		timeLag->minLag = (int)(((double)timeLag->gmtLag - (int)timeLag->gmtLag) * 60 + jpTime.min);
 

@@ -6,7 +6,7 @@
 #define COUNTRY	0
 #define CITY	1
 
-#define DEBUG
+// #define DEBUG
 
 typedef struct ST_country
 {
@@ -98,10 +98,24 @@ int main(void)
 	}
 	if (standardTime == 100)
 	{
-		printf("この国を追加しますか？ Yes:1 No:0 ");
+		printf("検索結果はありませんでした\n");
+		printf("この国をリストに追加しますか？ Yes:1 No:0 ");
 		if (YesOrNo())
 		{
 			double newCountryTimeLag;
+			printf("検索したかったのは州や地域ですか？ Yes:1 No:0 ");
+			if (YesOrNo())
+			{
+				char city[100];
+				printf("州または地域の名前を入力してください：");
+				scanf("%s", city);
+				sprintf(country, "%s_%s", country, city);
+			}
+			else
+			{
+				;
+
+			}
 			printf("その国のGMT(グリニッジ標準時)を入力してください：");
 			scanf("%lf", &newCountryTimeLag);
 			fprintf(f_country, "%s %lf\n", country, newCountryTimeLag);
@@ -126,7 +140,8 @@ double match_country(ST_country *st_country, char *country, int maxCountry, int 
 	{
 		if (strncmp(st_country[i].name, country, strlen(country)) == 0)
 		{
-			if (*(st_country[i].name + strlen(country)) == '\0')
+			//if (*(st_country[i].name + strlen(country)) == '\0')
+			if (strlen(country)[st_country[i].name] == '\0')
 			{
 				// HIT
 				if (search == COUNTRY)

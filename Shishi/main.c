@@ -43,13 +43,16 @@ int YesOrNo();
 int main(void)
 {
 	FILE *f_country;
+
 	ST_country st_country[100];
-	char country[100] = {0};
-	int i;
-	int maxCountry = 0;
-	double standardTime;
 	ST_timelag timeLag;
 	ST_japantime jpTime;
+
+	char country[100] = {0};
+
+	int i, maxCountry = 0;
+
+	double standardTime;
 
 	time_t timer;
 	struct tm *t_st;
@@ -96,6 +99,7 @@ int main(void)
 	{
 		standardTime = match_country(&st_country[0], country, maxCountry, CITY);
 	}
+
 	if (standardTime == 100)
 	{
 		printf("検索結果はありませんでした\n");
@@ -111,12 +115,23 @@ int main(void)
 				scanf("%s", city);
 				sprintf(country, "%s_%s", country, city);
 			}
-			else
-			{
-				;
-
-			}
-			printf("その国のGMT(グリニッジ標準時)を入力してください：");
+			printf("そこのGMT(グリニッジ標準時)を入力してください：");
+			scanf("%lf", &newCountryTimeLag);
+			fprintf(f_country, "%s %lf\n", country, newCountryTimeLag);
+		}
+	}
+	else if (standardTime == 101)
+	{
+		printf("検索結果はありませんでした\n");
+		printf("新しい州または地域をリストに追加しますか？ Yes:1 No:0 ");
+		if (YesOrNo())
+		{
+			double newCountryTimeLag;
+			char city[100];
+			printf("州または地域の名前を入力してください：");
+			scanf("%s", city);
+			sprintf(country, "%s_%s", country, city);
+			printf("そこのGMT(グリニッジ標準時)を入力してください：");
 			scanf("%lf", &newCountryTimeLag);
 			fprintf(f_country, "%s %lf\n", country, newCountryTimeLag);
 		}
@@ -197,12 +212,8 @@ double match_city(ST_country *st_country, int maxCountry, int maxCity)
 		{
 			return st_country[i].standardTime;
 		}
-		else if (i == maxCountry - 1)
-		{
-			return 100;
-		}
 	}
-	return 100;
+	return 101;
 }
 
 void getTimeLag(ST_timelag *timeLag, ST_japantime jpTime, double standardTime)

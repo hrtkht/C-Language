@@ -38,6 +38,7 @@ typedef struct ST_japantime
 double match_country(ST_country *st_country, char *country, int maxCountry, int search);
 double match_city(ST_country *st_country, int maxCountry, int maxCity);
 void getTimeLag(ST_timelag *timeLag, ST_japantime jpTime, double standardTime);
+int YesOrNo();
 
 int main(void)
 {
@@ -97,7 +98,14 @@ int main(void)
 	}
 	if (standardTime == 100)
 	{
-		printf("\n検索結果なし\n");
+		printf("この国を追加しますか？ Yes:1 No:0 ");
+		if (YesOrNo())
+		{
+			double newCountryTimeLag;
+			printf("その国のGMT(グリニッジ標準時)を入力してください：");
+			scanf("%lf", &newCountryTimeLag);
+			fprintf(f_country, "%s %lf\n", country, newCountryTimeLag);
+		}
 	}
 	else
 	{
@@ -166,7 +174,7 @@ double match_city(ST_country *st_country, int maxCountry, int maxCity)
 {
 	int i;
 	int city;
-	printf("\n何番の州?? : ");
+	printf("\n何番の州??：");
 	scanf("%d", &city);
 	for (i=0; i<maxCountry; ++i)
 	{
@@ -190,7 +198,9 @@ void getTimeLag(ST_timelag *timeLag, ST_japantime jpTime, double standardTime)
 		timeLag->dayLag = 0;
 		timeLag->hourLag = 0;
 		timeLag->minLag = 0;
-		printf("　日本は%4d年%2d月%2d日%2d時%2d分\n",jpTime.year, jpTime.mon, jpTime.day, jpTime.hour, jpTime.min);
+		//printf("\nグリニッジ標準時%.2f\n", standardTime);
+		//printf("現地からの時差%.2f\n", timeLag->gmtLag);
+		printf("　日本は%2d年%2d月%2d日%2d時%2d分\n",jpTime.year, jpTime.mon, jpTime.day, jpTime.hour, jpTime.min);
 
 		timeLag->minLag = (int)(((double)timeLag->gmtLag - (int)timeLag->gmtLag) * 60 + jpTime.min);
 
@@ -327,4 +337,11 @@ void getTimeLag(ST_timelag *timeLag, ST_japantime jpTime, double standardTime)
 			timeLag->yearLag = +1;
 		}
 		timeLag->yearLag += jpTime.year;
+}
+
+int YesOrNo()
+{
+	int x;
+	scanf("%d", &x);
+	return x;
 }
